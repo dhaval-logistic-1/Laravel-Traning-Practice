@@ -1,0 +1,117 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+DomIQ Agentic PMS is a comprehensive property management CRM platform with AI-powered conversational capabilities. The system features sophisticated AI avatars, real-time lead engagement, analytics tracking, and embeddable widgets for external websites.
+
+## Core Architecture
+
+### 1. Dashboard CRM (`frontend/src/app/(dashboard)/`)
+- Next.js 14 app with server components
+- Supabase authentication with RBAC (super_admin, admin, agent roles)
+- Real-time lead management and analytics
+- Activity dashboard, contacts, call companion, settings pages
+
+### 2. Database API (`backend/database-api/`)
+- FastAPI backend managing PostgreSQL (Supabase hosted)
+- **IMPORTANT**: Database is at api.domiq.ai, NOT localhost
+- Handles authentication, profiles, call sessions, conversations, active calls
+- RBAC middleware for all endpoints
+
+### 3. Widget System
+- Chat widget: `public/build/loader.js` - AI conversational interface
+- Email widget: `public/build/email-loader.js` - Lead capture
+- Vite-based bundling with CSS isolation (`domiq-` prefix)
+- Session persistence across widget opens/closes
+
+## Development Commands
+
+### Dashboard Development
+```bash
+npm run dev                 # Start Next.js (port 4000)
+npm run build              # Production build
+npm run lint               # Run ESLint
+npm run test:components    # Run Jest tests
+```
+
+### Database API
+```bash
+cd backend/database-api
+source venv/bin/activate
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload --timeout-keep-alive 20
+```
+**Note**: Database is hosted at api.domiq.ai (starts with 3.1...), not localhost
+
+### Widget Development
+```bash
+npm run dev:widget         # Chat widget dev mode
+npm run dev:email-widget   # Email widget dev mode
+npm run build:both-widgets # Production build
+```
+
+### Testing
+```bash
+npm run test:components    # Jest component tests
+npm run test:all          # All tests
+npm run test:validation   # Build validation
+```
+
+## High-Level Architecture
+
+### Technology Stack
+- **Frontend**: Next.js 14, TypeScript, React 18, Tailwind CSS
+- **Backend**: FastAPI, SQLAlchemy, PostgreSQL (Supabase)
+- **AI Stack**: Together AI (Qwen), AKOOL avatars, ElevenLabs voice, OpenAI
+- **Real-time**: Agora WebRTC, WebSocket transcription
+
+### Data Flow
+1. User interacts with AI avatar (AKOOL) + voice (ElevenLabs)
+2. Together AI processes responses with context
+3. Amplitude tracks 18+ interaction events
+4. FastAPI stores lead data in PostgreSQL
+5. Calendly webhooks trigger tour notifications
+6. SendGrid delivers AI-generated follow-ups
+
+### RBAC System
+- **super_admin**: Full system access
+- **admin**: Property management, analytics, team management
+- **agent**: Contact management, own metrics only
+- Implementation in `AuthContext.tsx` and `profiles_service.py`
+
+## Critical Configuration
+
+### Environment Variables
+- `.env.local`: Supabase keys, AI service keys, Amplitude
+- `database-api/.env`: PostgreSQL connection (api.domiq.ai)
+- **NEVER** edit .env files directly
+
+### Important Notes
+1. **Database**: Single production database at api.domiq.ai (3.1...) - no localhost database
+2. **Never use Supabase as database** - only for authentication
+3. **API endpoints**: Use api.domiq.ai, not localhost:8000
+4. **SSH access**: Use `patrick-database-api.pem` in database-api/
+5. **Git workflow**: Never commit automatically - user handles all git operations
+
+### Common Issues & Solutions
+- **Database API offline**: Check connection to api.domiq.ai
+- **RBAC not working**: Ensure user profile exists in profiles table
+- **Widget style conflicts**: Verify `domiq-` CSS prefix
+- **Analytics not loading**: Check Amplitude API key
+
+## Code Standards
+
+### Development Guidelines
+- Study existing patterns before implementing
+- Test with appropriate framework before committing
+- Follow existing naming conventions and structures
+- Maintain RBAC controls throughout
+- Use existing libraries - don't introduce new ones without justification
+
+### Quality Requirements
+- Run `npm run lint` before changes
+- Ensure all tests pass
+- Verify production build works
+- Follow TypeScript strict mode
+- Maintain 80% test coverage (90% for critical components)

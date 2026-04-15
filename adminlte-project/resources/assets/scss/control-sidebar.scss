@@ -1,0 +1,102 @@
+// AdminLTE – Custom SCSS
+
+// Variables ─────────────────────────────
+$sidebar-width: 300px;
+$sidebar-offset: -320px;
+$sidebar-transition: right 0.25s ease;
+$sidebar-bg: #ffffff;
+$sidebar-border: #dee2e6;
+$sidebar-z-index: 1055;
+$overlay-z-index: 1050;
+$overlay-bg: rgba(0, 0, 0, 0.4);
+$close-btn-color: #6c757d;
+$close-btn-hover: #343a40;
+$cs-check-font-size: 14px;
+$cs-check-gap: 8px;
+
+// Dark mode
+$dark-sidebar-bg: #343a40;
+$dark-sidebar-border: #495057;
+$dark-sidebar-text: #dee2e6;
+$dark-close-btn: #adb5bd;
+
+// Control Sidebar
+.control-sidebar {
+    position: fixed;
+    top: 57px;
+    right: $sidebar-offset;
+    width: $sidebar-width;
+    height: 100%;
+    background: $sidebar-bg;
+    border-left: 1px solid $sidebar-border;
+    z-index: $sidebar-z-index;
+    transition: $sidebar-transition;
+    overflow-y: auto;
+    padding-top: 57px;
+
+    &.control-sidebar-open {
+        right: 0;
+    }
+}
+
+
+// Close Button 
+.cs-close-btn {
+    position: absolute;
+    top: 62px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: $close-btn-color;
+    line-height: 1;
+    padding: 4px 8px;
+
+    &:hover {
+        color: $close-btn-hover;
+    }
+}
+
+//  Checkbox Rows
+.cs-check {
+    display: flex;
+    align-items: center;
+    gap: $cs-check-gap;
+    margin-bottom: 8px;
+    font-size: $cs-check-font-size;
+    cursor: pointer;
+
+    input[type="checkbox"] {
+        cursor: pointer;
+    }
+}
+
+// Select Full Width
+.cs-select {
+    width: 100%;
+}
+
+//  Dark Mode 
+body.dark-mode {
+    .control-sidebar {
+        background: $dark-sidebar-bg;
+        border-color: $dark-sidebar-border;
+        color: $dark-sidebar-text;
+
+        h5,
+        h6,
+        label,
+        span {
+            color: $dark-sidebar-text;
+        }
+    }
+
+    .cs-close-btn {
+        color: $dark-close-btn;
+
+        &:hover {
+            color: $dark-sidebar-text;
+        }
+    }
+}
